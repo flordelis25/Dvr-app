@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generatore DVR – Italia</title>
+
+<style>
+body { font-family: Arial, sans-serif; background:#f2f2f2; margin:0; padding:0; }
+.container { max-width:900px; margin:20px auto; background:#fff; padding:20px; border-radius:10px; }
+h1 { text-align:center; }
+section { margin-bottom:25px; padding:15px; border:1px solid #ddd; border-radius:10px; background:#fafafa; }
+label { font-weight:bold; display:block; margin-top:10px; }
+input, textarea { width:100%; padding:8px; border:1px solid #aaa; border-radius:6px; margin-top:5px; }
+button { padding:10px 18px; background:black; color:white; border:none; border-radius:8px; margin-top:15px; cursor:pointer; }
+.block { padding:10px; border:1px dashed #888; margin-top:10px; border-radius:8px; background:white; }
+.small { font-size:12px; opacity:0.8; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>GENERATORE DVR – D.Lgs. 81/08</h1>
+
+<section>
+<h2>Dati aziendali</h2>
+<label>Ragione sociale</label>
+<input id="azienda">
+
+<label>Sede</label>
+<input id="sede">
+
+<label>P.IVA</label>
+<input id="piva">
+
+<label>Datore di lavoro</label>
+<input id="datore">
+
+<label>RSPP</label>
+<input id="rspp">
+
+<label>RLS</label>
+<input id="rls">
+
+<label>Medico competente</label>
+<input id="medico">
+
+<label>Descrizione attività</label>
+<textarea id="descrizione"></textarea>
+</section>
+
+<section>
+<h2>Mansioni</h2>
+<div id="mansioni"></div>
+<button onclick="addMansione()">➕ Aggiungi mansione</button>
+</section>
+
+<section>
+<h2>Rischi</h2>
+<div id="rischi"></div>
+<button onclick="addRischio()">➕ Aggiungi rischio</button>
+</section>
+
+<section>
+<h2>DVR Generato</h2>
+<button onclick="genera()">📄 Genera DVR</button>
+<textarea id="output" style="height:250px;margin-top:15px;"></textarea>
+</section>
+
+</div>
+
+<script>
+
+function addMansione() {
+    let box = document.createElement("div");
+    box.className = "block";
+    box.innerHTML = `
+    <label>Mansione</label><input class="m_nome">
+    <label>Reparto</label><input class="m_rep">
+    <label>Nº addetti</label><input class="m_add">
+    <button onclick="this.parentNode.remove()">🗑️ Rimuovi</button>
+    `;
+    document.getElementById("mansioni").appendChild(box);
+}
+
+function addRischio() {
+    let box = document.createElement("div");
+    box.className = "block";
+    box.innerHTML = `
+    <label>Mansione</label><input class="r_mans">
+    <label>Pericolo</label><input class="r_per">
+    <label>Danno potenziale</label><input class="r_dan">
+    <label>Misure esistenti</label><textarea class="r_es"></textarea>
+    <label>Misure da adottare</label><textarea class="r_ad"></textarea>
+    <label>L (probabilità 1-5)</label><input class="r_L" type="number" min="1" max="5" value="2">
+    <label>G (gravità 1-5)</label><input class="r_G" type="number" min="1" max="5" value="2">
+    <button onclick="this.parentNode.remove()">🗑️ Rimuovi</button>
+    `;
+    document.getElementById("rischi").appendChild(box);
+}
+
+function genera() {
+
+    let azienda = document.getElementById("azienda").value;
+    let sede = document.getElementById("sede").value;
+    let piva = document.getElementById("piva").value;
+    let datore = document.getElementById("datore").value;
+    let rspp = document.getElementById("rspp").value;
+    let rls = document.getElementById("rls").value;
+    let medico = document.getElementById("medico").value;
+    let descr = document.getElementById("descrizione").value;
+
+    let mansTxt = "";
+    document.querySelectorAll("#mansioni .block").forEach(m => {
+        let nome = m.querySelector(".m_nome").value;
+        let rep = m.querySelector(".m_rep").value;
+        let add = m.querySelector(".m_add").value;
+        mansTxt += `- Mansione: ${nome}, Reparto: ${rep}, Addetti: ${add}\n`;
+    });
+
+    let rischTxt = "";
+    document.querySelectorAll("#rischi .block").forEach(r => {
+        let mans = r.querySelector(".r_mans").value;
+        let per = r.querySelector(".r_per").value;
+        let dan = r.querySelector(".r_dan").value;
+        let es = r.querySelector(".r_es").value;
+        let ad = r.querySelector(".r_ad").value;
+        let L = parseInt(r.querySelector(".r_L").value);
+        let G = parseInt(r.querySelector(".r_G").value);
+        let R = L * G;
+
+        rischTxt += `
+Mansione: ${mans}
+Pericolo: ${per}
+Danno potenziale: ${dan}
+Misure esistenti: ${es}
+Misure da adottare: ${ad}
+Valutazione: L=${L}, G=${G}, R=${R}
+
+`;
+    });
+
+    let final = `
+DOCUMENTO DI VALUTAZIONE DEI RISCHI (DVR)
+-----------------------------------------
+AZIENDA: ${azienda}
+SEDE: ${sede}
+PIVA: ${piva}
+
+DATORE DI LAVORO: ${datore}
+RSPP: ${rspp}
+RLS: ${rls}
+MEDICO COMPETENTE: ${medico}
+
+DESCRIZIONE ATTIVITÀ:
+${descr}
+
+-----------------------------------------
+MANSIONI
+-----------------------------------------
+${mansTxt}
+
+-----------------------------------------
+VALUTAZIONE RISCHI
+-----------------------------------------
+${rischTxt}
+
+FINE DOCUMENTO
+    `;
+
+    document.getElementById("output").value = final;
+}
+
+</script>
+
+</body>
+</html>
