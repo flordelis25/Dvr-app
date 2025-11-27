@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Food Cost – Flor de Lis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617;
+      color: #0f172a;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1rem 2rem;
+    }
+    header {
+      background: radial-gradient(circle at top, #1d2a5b 0, #020617 55%);
+      color: #e5e7eb;
+      padding: 1rem 1.25rem 1.25rem;
+      border-radius: 0 0 1.5rem 1.5rem;
+      box-shadow: 0 10px 30px rgba(15,23,42,0.7);
+      margin-bottom: 1.4rem;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.35rem;
+    }
+    header p {
+      margin: 0.25rem 0 0;
+      font-size: 0.8rem;
+      color: #cbd5f5;
+    }
+    header small {
+      font-size: 0.7rem;
+      color: #9ca3af;
+    }
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 900px) {
+      main { grid-template-columns: minmax(0,1fr); }
+    }
+    .card {
+      background: #f9fafb;
+      border-radius: 1rem;
+      padding: 0.9rem 1rem 1rem;
+      box-shadow: 0 6px 18px rgba(15,23,42,0.12);
+      border: 1px solid #e5e7eb;
+    }
+    .card h2 {
+      margin: 0 0 0.35rem;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .card h3 {
+      margin: 0.5rem 0 0.2rem;
+      font-size: 0.9rem;
+    }
+    .icon { font-size: 1.2rem; }
+    label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: block;
+      margin-top: 0.4rem;
+      margin-bottom: 0.1rem;
+      color: #374151;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.4rem 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #d1d5db;
+      font-size: 0.85rem;
+      background: #ffffff;
+    }
+    input:focus, select:focus {
+      outline: 2px solid #111827;
+      outline-offset: 1px;
+    }
+    .small {
+      font-size: 0.7rem;
+      color: #6b7280;
+      margin-top: 0.2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+    }
+    th, td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0.25rem 0.3rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: #4b5563;
+    }
+    tr:last-child td { border-bottom: none; }
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 0.35rem;
+    }
+    .btn-primary { background: #111827; color: #f9fafb; }
+    .btn-secondary { background: #e5e7eb; color: #111827; }
+    .btn-danger { background: #fee2e2; color: #991b1b; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      margin-left: 0.3rem;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .row > div {
+      flex: 1 1 150px;
+    }
+    .out-box {
+      background: #020617;
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      color: #e5e7eb;
+      font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      max-height: 260px;
+      overflow: auto;
+      margin-top: 0.4rem;
+    }
+    footer {
+      margin-top: 1.1rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #9ca3af;
+    }
+    .allergeni-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      margin-top: 0.25rem;
+    }
+    .allergeni-list label {
+      font-weight: 500;
+      margin-top: 0;
+      font-size: 0.7rem;
+    }
+    .allergeni-list input {
+      width: auto;
+      margin-right: 0.15rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Food Cost – Flor de Lis</h1>
+      <p>Ingredienti, ricette, incidenza personale 33%, costi fissi in % e allergeni.</p>
+      <small>Uso interno ristorante – dati salvati solo nel browser (localStorage).</small>
+    </header>
+
+    <main>
+      <!-- INGREDIENTI -->
+      <section class="card">
+        <h2>
+          <span class="icon">🥕</span>
+          Ingredienti
+          <span class="badge">€/kg · scarto · allergeni</span>
+        </h2>
+        <p class="small">
+          Inserisci gli ingredienti con il prezzo al kg, la % di scarto e gli allergeni. Il costo netto al grammo viene usato nelle ricette.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th>€ / kg</th>
+              <th>Scarto %</th>
+              <th>Allergeni</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="ingredienti-body"></tbody>
+        </table>
+        <button class="btn btn-secondary" onclick="aggiungiIngrediente()">➕ Aggiungi ingrediente</button>
+        <div style="margin-top:0.4rem; display:flex; flex-wrap:wrap; gap:0.4rem;">
+          <button class="btn btn-secondary" onclick="salvaIngredienti()">💾 Salva ingredienti</button>
+          <button class="btn btn-danger" onclick="cancellaIngredienti()">🗑️ Svuota ingredienti</button>
+        </div>
+        <p class="small">
+          Gli ingredienti sono salvati in localStorage sul dispositivo.
+        </p>
+      </section>
+
+      <!-- PARAMETRI + RISULTATI -->
+      <section class="card">
+        <h2><span class="icon">💶</span>Parametri & risultati</h2>
+
+        <h3>Incidenza personale e costi fissi</h3>
+        <label>Incidenza costo personale sul costo piatto (%)</label>
+        <input type="number" id="inc-personale" value="33" min="0" max="80" />
+        <p class="small">
+          Con 33%, la materia prima è il 67% del costo piatto. Costo con personale = materia / (1 − incidenza).
+        </p>
+
+        <label>Incidenza costi fissi generali (affitto, utenze, ecc.) sul costo piatto (%)</label>
+        <input type="number" id="inc-fissi" value="15" min="0" max="80" />
+        <p class="small">
+          Costo con fissi = costo con personale / (1 − %fissi).
+        </p>
+
+        <label>Ricarico finale (%)</label>
+        <input type="number" id="ricarico-finale" value="100" min="0" />
+        <p class="small">
+          Ricarico applicato dopo personale e fissi. 100% = ×2, 150% ≈ ×2,5.
+        </p>
+
+        <h3 style="margin-top:0.8rem;">Ultimo piatto calcolato</h3>
+        <div id="out-piatto" class="out-box">Nessun piatto calcolato ancora.</div>
+      </section>
+
+      <!-- RICETTE -->
+      <section class="card" style="grid-column: 1 / -1;">
+        <h2><span class="icon">🍽️</span>Ricetta / Piatto</h2>
+        <div class="row">
+          <div>
+            <label>Nome piatto</label>
+            <input type="text" id="rc-nome" placeholder="Es. Risotto ai gamberi" />
+          </div>
+          <div>
+            <label>N. porzioni ricetta</label>
+            <input type="number" id="rc-porzioni" value="1" min="1" />
+          </div>
+          <div>
+            <label>Ricette salvate</label>
+            <select id="rc-salvate" onchange="caricaRicetta()">
+              <option value="">-- nessuna selezionata --</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:0.35rem; display:flex; flex-wrap:wrap; gap:0.4rem;">
+          <button class="btn btn-secondary" onclick="salvaRicetta()">💾 Salva ricetta</button>
+          <button class="btn btn-danger" onclick="cancellaRicetta()">🗑️ Elimina ricetta selezionata</button>
+        </div>
+
+        <h3 style="margin-top:0.6rem;">Ingredienti del piatto</h3>
+        <p class="small">
+          Il nome ingrediente deve coincidere con il listino (maiuscole/minuscole ignorate). Il programma usa il costo netto al grammo e somma gli allergeni.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th>Grammi per ricetta</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="ricetta-body"></tbody>
+        </table>
+        <button class="btn btn-secondary" onclick="aggiungiRigaRicetta()">➕ Aggiungi riga</button>
+
+        <div style="margin-top:0.75rem;">
+          <button class="btn btn-primary" onclick="calcolaPiatto()">🧮 Calcola food cost piatto</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Strumento interno Flor de Lis – dati salvati in locale sul dispositivo (localStorage).
+    </footer>
+  </div>
+
+  <script>
+    const ALLERGENI = [
+      "Glutine","Crostacei","Uova","Pesce","Arachidi","Soia","Latte",
+      "Frutta a guscio","Sedano","Senape","Sesamo",
+      "Anidride solforosa / solfiti","Lupini","Molluschi"
+    ];
+
+    function creaCheckboxAllergeni(selected = []) {
+      return ALLERGENI.map(a => {
+        const checked = selected.includes(a) ? "checked" : "";
+        return `<label><input type="checkbox" class="ing-allergene" value="${a}" ${checked}>${a}</label>`;
+      }).join("");
+    }
+
+    // INGREDIENTI
+    function aggiungiIngrediente(nome="", prezzo="", scarto="15", allergeni=[]) {
+      const tbody = document.getElementById("ingredienti-body");
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input type="text" class="ing-nome" value="${nome}" placeholder="Es. riso carnaroli"></td>
+        <td><input type="number" class="ing-prezzo" value="${prezzo}" step="0.01" min="0"></td>
+        <td><input type="number" class="ing-scarto" value="${scarto}" step="1" min="0" max="100"></td>
+        <td><div class="allergeni-list">${creaCheckboxAllergeni(allergeni)}</div></td>
+        <td><button class="btn btn-danger" onclick="this.closest('tr').remove()">✕</button></td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    function leggiIngredienti() {
+      const rows = document.querySelectorAll("#ingredienti-body tr");
+      const lista = [];
+      rows.forEach(tr => {
+        const nome = tr.querySelector(".ing-nome").value.trim();
+        const prezzo = parseFloat(tr.querySelector(".ing-prezzo").value);
+        const scarto = parseFloat(tr.querySelector(".ing-scarto").value);
+        if (!nome || isNaN(prezzo)) return;
+        const scartoRatio = isNaN(scarto) ? 0 : Math.min(Math.max(scarto, 0), 100) / 100;
+        const costoNettoKg = prezzo / (1 - scartoRatio || 1);
+        const costoNettoGrammo = costoNettoKg / 1000;
+
+        const allergeni = [];
+        tr.querySelectorAll(".ing-allergene:checked").forEach(ch => allergeni.push(ch.value));
+
+        lista.push({
+          nome: nome.toLowerCase(),
+          prezzoKg: prezzo,
+          scarto,
+          costoNettoKg,
+          costoNettoGrammo,
+          allergeni
+        });
+      });
+      return lista;
+    }
+
+    function salvaIngredienti() {
+      const lista = leggiIngredienti();
+      localStorage.setItem("fc_ingredienti_fdl", JSON.stringify(lista));
+      alert("Ingredienti salvati.");
+    }
+
+    function caricaIngredienti() {
+      const data = localStorage.getItem("fc_ingredienti_fdl");
+      if (!data) return;
+      const lista = JSON.parse(data);
+      const tbody = document.getElementById("ingredienti-body");
+      tbody.innerHTML = "";
+      lista.forEach(ing => {
+        aggiungiIngrediente(ing.nome, ing.prezzoKg, ing.scarto, ing.allergeni || []);
+      });
+    }
+
+    function cancellaIngredienti() {
+      if (!confirm("Vuoi cancellare tutti gli ingredienti salvati?")) return;
+      localStorage.removeItem("fc_ingredienti_fdl");
+      document.getElementById("ingredienti-body").innerHTML = "";
+    }
+
+    // RICETTA
+    function aggiungiRigaRicetta(nomeIng="", grammi="0") {
+      const tbody = document.getElementById("ricetta-body");
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input type="text" class="rc-ing" value="${nomeIng}" placeholder="Es. riso carnaroli"></td>
+        <td><input type="number" class="rc-grammi" value="${grammi}" min="0" step="1"></td>
+        <td><button class="btn btn-danger" onclick="this.closest('tr').remove()">✕</button></td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    function leggiRicettaCorrente() {
+      const nomePiatto = (document.getElementById("rc-nome").value || "").trim();
+      const porzioni = parseFloat(document.getElementById("rc-porzioni").value) || 1;
+      const righe = [];
+      document.querySelectorAll("#ricetta-body tr").forEach(tr => {
+        const ing = tr.querySelector(".rc-ing").value.trim();
+        const grammi = parseFloat(tr.querySelector(".rc-grammi").value);
+        if (!ing || isNaN(grammi) || grammi <= 0) return;
+        righe.push({ ingrediente: ing, grammi });
+      });
+      return { nomePiatto, porzioni, righe };
+    }
+
+    function salvaRicetta() {
+      const rc = leggiRicettaCorrente();
+      if (!rc.nomePiatto) {
+        alert("Inserisci un nome per la ricetta prima di salvarla.");
+        return;
+      }
+      if (!rc.righe.length) {
+        alert("Aggiungi almeno un ingrediente alla ricetta.");
+        return;
+      }
+      const data = localStorage.getItem("fc_ricette_fdl");
+      const elenco = data ? JSON.parse(data) : {};
+      elenco[rc.nomePiatto] = rc;
+      localStorage.setItem("fc_ricette_fdl", JSON.stringify(elenco));
+      aggiornaSelectRicette();
+      alert("Ricetta salvata: " + rc.nomePiatto);
+    }
+
+    function aggiornaSelectRicette() {
+      const sel = document.getElementById("rc-salvate");
+      const data = localStorage.getItem("fc_ricette_fdl");
+      sel.innerHTML = '<option value="">-- nessuna selezionata --</option>';
+      if (!data) return;
+      const elenco = JSON.parse(data);
+      Object.keys(elenco).forEach(nome => {
+        const opt = document.createElement("option");
+        opt.value = nome;
+        opt.textContent = nome;
+        sel.appendChild(opt);
+      });
+    }
+
+    function caricaRicetta() {
+      const sel = document.getElementById("rc-salvate");
+      const nome = sel.value;
+      if (!nome) return;
+      const data = localStorage.getItem("fc_ricette_fdl");
+      if (!data) return;
+      const elenco = JSON.parse(data);
+      const rc = elenco[nome];
+      if (!rc) return;
+      document.getElementById("rc-nome").value = rc.nomePiatto;
+      document.getElementById("rc-porzioni").value = rc.porzioni;
+      const tbody = document.getElementById("ricetta-body");
+      tbody.innerHTML = "";
+      rc.righe.forEach(r => aggiungiRigaRicetta(r.ingrediente, r.grammi));
+    }
+
+    function cancellaRicetta() {
+      const sel = document.getElementById("rc-salvate");
+      const nome = sel.value;
+      if (!nome) {
+        alert("Seleziona una ricetta da eliminare.");
+        return;
+      }
+      if (!confirm("Vuoi eliminare la ricetta: " + nome + " ?")) return;
+      const data = localStorage.getItem("fc_ricette_fdl");
+      if (!data) return;
+      const elenco = JSON.parse(data);
+      delete elenco[nome];
+      localStorage.setItem("fc_ricette_fdl", JSON.stringify(elenco));
+      aggiornaSelectRicette();
+      document.getElementById("ricetta-body").innerHTML = "";
+      document.getElementById("rc-nome").value = "";
+      document.getElementById("rc-porzioni").value = 1;
+      alert("Ricetta eliminata.");
+    }
+
+    // CALCOLO
+    function calcolaPiatto() {
+      const ingredienti = leggiIngredienti();
+      if (ingredienti.length === 0) {
+        alert("Inserisci almeno un ingrediente in listino.");
+        return;
+      }
+      const rc = leggiRicettaCorrente();
+      if (!rc.righe.length) {
+        alert("Aggiungi almeno un ingrediente alla ricetta.");
+        return;
+      }
+      const nomePiatto = rc.nomePiatto || "Piatto senza nome";
+      const porzioni = rc.porzioni;
+
+      const incPersPerc = parseFloat(document.getElementById("inc-personale").value) || 0;
+      const incFissiPerc = parseFloat(document.getElementById("inc-fissi").value) || 0;
+      const ricaricoPerc = parseFloat(document.getElementById("ricarico-finale").value) || 0;
+
+      let costoMateriaRicetta = 0;
+      let dettagliIng = "";
+      let allergeniPiattoSet = new Set();
+
+      rc.righe.forEach(r => {
+        const nomeIng = r.ingrediente.trim().toLowerCase();
+        const grammi = r.grammi;
+        const trovato = ingredienti.find(i => i.nome === nomeIng);
+        if (!trovato) {
+          dettagliIng += `⚠️ Ingrediente non trovato in listino: "${r.ingrediente}"\n`;
+          return;
+        }
+        const costo = trovato.costoNettoGrammo * grammi;
+        costoMateriaRicetta += costo;
+        dettagliIng += `- ${r.ingrediente} – ${grammi.toFixed(0)} g → ${costo.toFixed(2)} € (scarto ${trovato.scarto.toFixed(0)}%)\n`;
+        (trovato.allergeni || []).forEach(a => allergeniPiattoSet.add(a));
+      });
+
+      if (costoMateriaRicetta === 0) {
+        alert("Nessun ingrediente valido per il piatto (controlla nomi e grammi).");
+        return;
+      }
+
+      const costoMateriaPorzione = costoMateriaRicetta / porzioni;
+
+      const incPers = Math.max(0, Math.min(incPersPerc, 80)) / 100;
+      const denPers = 1 - incPers;
+      const costoConPersonale = denPers > 0 ? (costoMateriaPorzione / denPers) : costoMateriaPorzione;
+      const quotaPersonale = costoConPersonale - costoMateriaPorzione;
+
+      const incFissi = Math.max(0, Math.min(incFissiPerc, 80)) / 100;
+      const denFissi = 1 - incFissi;
+      const costoConFissi = denFissi > 0 ? (costoConPersonale / denFissi) : costoConPersonale;
+      const quotaFissi = costoConFissi - costoConPersonale;
+
+      const prezzoVendita = costoConFissi * (1 + (ricaricoPerc / 100));
+
+      const percFoodCost = prezzoVendita > 0 ? (costoMateriaPorzione / prezzoVendita) * 100 : 0;
+      const percPersonale = prezzoVendita > 0 ? (quotaPersonale / prezzoVendita) * 100 : 0;
+      const percFissi = prezzoVendita > 0 ? (quotaFissi / prezzoVendita) * 100 : 0;
+
+      const allergeniPiatto = Array.from(allergeniPiattoSet);
+
+      let testo = "";
+      testo += `PIATTO: ${nomePiatto}\n`;
+      testo += `Porzioni per ricetta: ${porzioni}\n`;
+      testo += `----------------------------------------\n`;
+      testo += `INGREDIENTI (materia prima)\n`;
+      testo += dettagliIng + "\n";
+      testo += `Totale materia prima ricetta: ${costoMateriaRicetta.toFixed(2)} €\n`;
+      testo += `Materia prima per porzione: ${costoMateriaPorzione.toFixed(2)} €\n\n`;
+
+      testo += `COSTO CON PERSONALE\n`;
+      testo += `Incidenza personale impostata: ${incPersPerc.toFixed(1)} %\n`;
+      testo += `Costo piatto (materia + personale): ${costoConPersonale.toFixed(2)} € / porzione\n`;
+      testo += `Quota personale stimata: ${quotaPersonale.toFixed(2)} € / porzione\n\n`;
+
+      testo += `COSTI FISSI (in %)\n`;
+      testo += `Incidenza costi fissi impostata: ${incFissiPerc.toFixed(1)} %\n`;
+      testo += `Costo piatto (materia + personale + fissi): ${costoConFissi.toFixed(2)} € / porzione\n`;
+      testo += `Quota costi fissi stimata: ${quotaFissi.toFixed(2)} € / porzione\n\n`;
+
+      testo += `RICARICO FINALE\n`;
+      testo += `Ricarico applicato: ${ricaricoPerc.toFixed(1)} %\n`;
+      testo += `Prezzo di vendita suggerito: ${prezzoVendita.toFixed(2)} €\n\n`;
+
+      testo += `INCIDENZE SUL PREZZO\n`;
+      testo += `Food cost (materia / prezzo): ${percFoodCost.toFixed(1)} %\n`;
+      testo += `Personale / prezzo: ${percPersonale.toFixed(1)} %\n`;
+      testo += `Costi fissi / prezzo: ${percFissi.toFixed(1)} %\n\n`;
+
+      testo += `ALLERGENI DEL PIATTO\n`;
+      if (allergeniPiatto.length) {
+        testo += allergeniPiatto.join(", ") + "\n";
+      } else {
+        testo += "Nessun allergene selezionato sugli ingredienti.\n";
+      }
+
+      document.getElementById("out-piatto").innerText = testo;
+    }
+
+    // INIT
+    window.addEventListener("DOMContentLoaded", () => {
+      caricaIngredienti();
+      if (!document.querySelector("#ingredienti-body tr")) {
+        aggiungiIngrediente("riso carnaroli", "4.50", "15", ["Glutine"]);
+        aggiungiIngrediente("gamberi", "18.00", "30", ["Crostacei"]);
+        aggiungiIngrediente("burro", "7.00", "0", ["Latte"]);
+      }
+      aggiornaSelectRicette();
+      if (!document.querySelector("#ricetta-body tr")) {
+        aggiungiRigaRicetta("riso carnaroli", "80");
+        aggiungiRigaRicetta("gamberi", "60");
+      }
+    });
+  </script>
+</body>
+</html>
